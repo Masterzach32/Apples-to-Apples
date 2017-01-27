@@ -31,9 +31,9 @@ public class CardGameLobby extends Thread {
 		whites = new Deck();
 		for(Card card : CardGameServer.cards) {
 			if(card instanceof BlackCard)
-				blacks.addCard((BlackCard) card);
+				blacks.addCard(card);
 			else if(card instanceof WhiteCard)
-				whites.addCard((WhiteCard) card);
+				whites.addCard(card);
 		}
 		blacks.shuffle(100);
 		whites.shuffle(100);

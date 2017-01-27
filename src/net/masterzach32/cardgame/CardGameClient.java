@@ -1,7 +1,9 @@
 package net.masterzach32.cardgame;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 import org.json.simple.JSONObject;
@@ -25,17 +27,23 @@ public class CardGameClient {
 		CardGameServer.cards = CardLoader.loadAllCards();
 		Scanner scan = new Scanner(System.in);
 		Player player = null;
+		Socket s = null;
 		String name, ip;
-		
-		System.out.print("Server IP: ");
-		ip = scan.next();
 		System.out.print("Name: ");
 		name = scan.next();
-		try {
-			player = new Player(new Socket(ip, 25565), name);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+		do {
+			System.out.print("Server IP: ");
+			ip = scan.next();
+
+			try {
+				s = new Socket(ip, 25565);
+			} catch (IOException e) {
+				System.out.println("No server running at " + ip + ":25565!");
+			}
+		} while (s == null);
+		System.out.println("Connected to game server at " + ip + ":25565");
+		player = new Player(s, name);
 		System.out.println("Waiting for other players...");
 		int round = 0;
 		while(true) {
@@ -90,6 +98,7 @@ public class CardGameClient {
 				// receive played cards
 				data = (JSONObject) JSONValue.parseWithException(player.getInputStream().readLine());
 				Deck played = new Deck();
+				System.out.println();
 				System.out.println("Played cards:");
 				for(int i = 0; i < JSONHelper.getInteger(data, "size"); i++) {
 					System.out.println(i + ": " + CardGameServer.cards.get(JSONHelper.getInteger(data, "" + i)).getText());

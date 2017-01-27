@@ -30,7 +30,7 @@ public class CardLoader {
 			if(set.isDirectory() && !set.getName().substring(0, 1).equals("_")) {
 				try {
 					JSONObject setInfo = (JSONObject) JSONValue.parseWithException(readFile(new File(set.toString() + "/info.json")));
-					System.out.println("Loading Card Set: " + set.toString() + " " + JSONHelper.getString(setInfo, "name"));
+					System.out.println("Loading Card Set: " + JSONHelper.getString(setInfo, "name"));
 					loadCards(new File(set.toString() + "/whites.json"), cards, true, JSONHelper.getString(setInfo, "name"));
 					loadCards(new File(set.toString() + "/blacks.json"), cards, false, JSONHelper.getString(setInfo, "name"));
 				} catch (ParseException e) {
